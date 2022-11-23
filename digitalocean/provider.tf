@@ -7,4 +7,5 @@ terraform {
   }
 }
 
+# Set credential as an environment variable DIGITALOCEAN_TOKEN
 provider "digitalocean" {}
