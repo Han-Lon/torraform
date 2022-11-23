@@ -1,5 +1,5 @@
 variable "droplet_image" {
-  description = "Specific droplet image to use. Defaults to Debian 11 if none specified."
+  description = "Specific droplet image to use. Defaults to Centos 8 if none specified."
   type = string
   default = ""
 }

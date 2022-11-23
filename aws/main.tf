@@ -142,7 +142,7 @@ data "template_cloudinit_config" "ssm-agent-and-tor-userdata" {
   part {
     filename = "install-tor.sh"
     content_type = "text/part-handler"
-    content = file("../universal_scripts/install-tor.sh")
+    content = file("../universal_scripts/install-tor-debian.sh")
   }
 }
 
