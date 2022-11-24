@@ -21,9 +21,22 @@ variable "subnet_id" {
   default     = "null"
 }
 
+variable "allowed_ssh_ip" {
+  description = "Public IP address to allow SSH traffic from. Only needed if ec2_key_pair is set to a non-null value"
+  type = string
+  default = "x.x.x.x"
+}
+
 # Nice trick to ensure we have a reliable "null" string for evaluating this -- EC2 key pairs cannot have leading or trailing spaces, so there could never be a legit keypair named " null "
 variable "ec2_key_pair" {
   description = "The name of the EC2 SSH key pair to assign to the Tor server for shell access. If left as null, Systems Manager will be used instead for SSH-less access."
   type        = string
   default     = " null "
+}
+
+# Check out Onionshare at https://docs.onionshare.org/2.6/en/advanced.html#cli
+variable "install_onionshare" {
+  description = "Whether or not to install the Onionshare utility for quick and easy setup of a variety of Tor hidden services. Defaults to true (yes install)"
+  type = bool
+  default = true
 }

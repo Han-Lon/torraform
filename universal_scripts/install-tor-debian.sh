@@ -1,4 +1,5 @@
 #!/bin/bash
+INSTALL_ONIONSHARE=${INSTALL_ONIONSHARE}
 apt-get update -y && \
 apt-get upgrade -y
 
@@ -22,3 +23,12 @@ chown -R debian-tor /var/lib/tor/$RANDOM_FOLDERNAME/
 chmod 700 /var/lib/tor/$RANDOM_FOLDERNAME/
 echo "HiddenServiceDir /var/lib/tor/$RANDOM_FOLDERNAME/" | tee -a /etc/tor/torrc
 echo "HiddenServicePort 80 127.0.0.1:80" | tee -a /etc/tor/torrc
+
+service tor restart
+
+if [ $INSTALL_ONIONSHARE ]
+then
+  echo "INSTALL_ONIONSHARE flag set as true, installing Onionshare"
+else
+  echo "INSTALL_ONIONSHARE flag set as false, not installing Onionshare"
+fi
