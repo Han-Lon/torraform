@@ -27,7 +27,7 @@ DON'T DO ANYTHING ILLEGAL WITH THIS PROJECT.
 
 
 #### Onionshare Use
-- By default, a utility called `Onionshare` is installed for quick setup and management of a Tor hidden service. Type `onionshare` into the CLI to see all the options it can be run with
+- By default, a utility called [Onionshare](https://docs.onionshare.org/2.6/en/advanced.html#command-line-interface) is installed for quick setup and management of a Tor hidden service. Type `onionshare` into the CLI to see all the options it can be run with
 - You can just run `onionshare` commands directly on the instance, but they'll terminate once your session ends (foreground task)
   - To run them in the background, use `nohup`
     - e.g. with the chat server option -- `nohup onionshare --chat > onionshare-output.log 2>&1 &`
