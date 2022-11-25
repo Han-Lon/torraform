@@ -1,3 +1,23 @@
+############################
+# ACCESS RELATED VARIABLES #
+############################
+variable "allowed_ssh_ip" {
+  description = "Public IP address to allow SSH traffic from. Only needed if ec2_key_pair is set to a non-null value"
+  type = string
+  default = "x.x.x.x"
+}
+
+# Nice trick to ensure we have a reliable "null" string for evaluating this -- EC2 key pairs cannot have leading or trailing spaces, so there could never be a legit keypair named " null "
+variable "ec2_key_pair" {
+  description = "The name of the EC2 SSH key pair to assign to the Tor server for shell access. If left as null, Systems Manager will be used instead for SSH-less access."
+  type        = string
+  default     = " null "
+}
+
+
+#######################################
+# AWS CUSTOM INFRASTRUCTURE VARIABLES #
+#######################################
 variable "ami_id" {
   description = "The ID of the AMI to use when launching the Tor server. Can be left empty for default debian-11"
   type        = string
@@ -21,18 +41,10 @@ variable "subnet_id" {
   default     = "null"
 }
 
-variable "allowed_ssh_ip" {
-  description = "Public IP address to allow SSH traffic from. Only needed if ec2_key_pair is set to a non-null value"
-  type = string
-  default = "x.x.x.x"
-}
 
-# Nice trick to ensure we have a reliable "null" string for evaluating this -- EC2 key pairs cannot have leading or trailing spaces, so there could never be a legit keypair named " null "
-variable "ec2_key_pair" {
-  description = "The name of the EC2 SSH key pair to assign to the Tor server for shell access. If left as null, Systems Manager will be used instead for SSH-less access."
-  type        = string
-  default     = " null "
-}
+######################
+# BOOTSTRAPPING VARS #
+######################
 
 # Check out Onionshare at https://docs.onionshare.org/2.6/en/advanced.html#cli
 variable "install_onionshare" {

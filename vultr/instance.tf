@@ -1,7 +1,7 @@
 data "vultr_os" "debian-os" {
   filter {
     name   = "name"
-    values = ["Debian 11 x64 (bullseye)"]
+    values = [var.vultr_os_name]
   }
 }
 
@@ -9,22 +9,8 @@ data "vultr_os" "debian-os" {
 data "vultr_plan" "vultr-plan" {
   filter {
     name   = "id"
-    values = ["vc2-1c-1gb"]
+    values = [var.vultr_plan_name]
   }
-}
-
-resource "vultr_firewall_group" "tor-firewall" {
-  description = "Lock down ingress traffic as much as possible"
-}
-
-resource "vultr_firewall_rule" "tor-firewall-ssh-rule" {
-  firewall_group_id = vultr_firewall_group.tor-firewall.id
-  protocol = "tcp"
-  ip_type = "v4"
-  subnet = var.allowed_ssh_ip
-  subnet_size = var.allowed_ssh_ip == "0.0.0.0" ? "0" : "32"
-  port = "22"
-  notes = "Allow SSH from predefined IP"
 }
 
 resource "vultr_startup_script" "install-tor-script" {
