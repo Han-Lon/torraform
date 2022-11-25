@@ -16,7 +16,7 @@ data "aws_ami" "debian-official" {
 }
 
 data "template_cloudinit_config" "ssm-agent-and-tor-userdata" {
-  count = var.ec2_key_pair == " null " ? 1 : 0
+  count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 1 : 0
   gzip = true
   base64_encode = true
 
@@ -36,7 +36,7 @@ data "template_cloudinit_config" "ssm-agent-and-tor-userdata" {
 }
 
 data "template_cloudinit_config" "tor-userdata-only" {
-  count = var.ec2_key_pair == " null " ? 0 : 1
+  count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 0 : 1
   gzip = true
   base64_encode = true
 
@@ -49,6 +49,12 @@ data "template_cloudinit_config" "tor-userdata-only" {
   }
 }
 
+resource "aws_key_pair" "torraform-key-pair" {
+  count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 0 : 1
+  public_key = var.PUBLIC_ssh_key
+  key_name = "torraform-ssh-key"
+}
+
 resource "aws_instance" "tor-instance" {
   ami           = var.ami_id == "ami-null" ? data.aws_ami.debian-official[0].image_id : var.ami_id
   instance_type = "t3.micro"
@@ -57,11 +63,11 @@ resource "aws_instance" "tor-instance" {
 
   security_groups = [aws_security_group.tor-instance-sg.id]
 
-  iam_instance_profile = var.ec2_key_pair == " null " ? aws_iam_instance_profile.session-manager-instance-profile[0].name : null
+  iam_instance_profile = var.PUBLIC_ssh_key == "ssh-rsa null" ? aws_iam_instance_profile.session-manager-instance-profile[0].name : null
 
-  key_name = var.ec2_key_pair != " null " ? var.ec2_key_pair : null
+  key_name = var.PUBLIC_ssh_key == "ssh-rsa null" ? null : aws_key_pair.torraform-key-pair[0].key_name
 
-  user_data_base64 = var.ec2_key_pair == " null " ? data.template_cloudinit_config.ssm-agent-and-tor-userdata[0].rendered : data.template_cloudinit_config.tor-userdata-only[0].rendered
+  user_data_base64 = var.PUBLIC_ssh_key == " null " ? data.template_cloudinit_config.ssm-agent-and-tor-userdata[0].rendered : data.template_cloudinit_config.tor-userdata-only[0].rendered
 
   tags = {
     Name = "tor-service-server"

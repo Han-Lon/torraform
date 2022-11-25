@@ -7,11 +7,15 @@ variable "allowed_ssh_ip" {
   default = "x.x.x.x"
 }
 
-# Nice trick to ensure we have a reliable "null" string for evaluating this -- EC2 key pairs cannot have leading or trailing spaces, so there could never be a legit keypair named " null "
-variable "ec2_key_pair" {
-  description = "The name of the EC2 SSH key pair to assign to the Tor server for shell access. If left as null, Systems Manager will be used instead for SSH-less access."
-  type        = string
-  default     = " null "
+variable "PUBLIC_ssh_key" {
+  description = "The PUBLIC key for the SSH keypair you want to use to access the instance."
+  type = string
+  default = "ssh-rsa null"
+
+  validation {
+    condition = can(regex("^ssh-rsa *", var.PUBLIC_ssh_key))
+    error_message = "Supplied public SSH key value is either invalid format (should start with ssh-rsa) OR is the private key."
+  }
 }
 
 
