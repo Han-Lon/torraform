@@ -29,3 +29,6 @@ override.tf.json
 # example: *tfplan*
 
 .idea/
+
+# Do not push .tfvars files to remote
+*.tfvars

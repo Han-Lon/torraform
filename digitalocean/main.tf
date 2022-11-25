@@ -13,24 +13,26 @@ data "digitalocean_sizes" "droplet_size" {
   }
 }
 
-# Pick latest Centos 8 image if droplet_image variable is not set
-data "digitalocean_image" "centos-image" {
+data "digitalocean_image" "debian-image" {
   count = var.droplet_image == "" ? 1 : 0
-  slug = "centos-stream-8-x64"
+  slug = "debian-11-x64"
 }
 
-# Fetch local IP address for adding to firewall SSH rules only if lock_down_firewall is set to true
-data "http" "local-ip" {
-  count = var.lock_down_firewall ? 1 : 0
-  url = "https://ipv4.rawrify.com/ip"
+resource "digitalocean_ssh_key" "tor-server-ssh-key" {
+  name       = "tor-server-ssh-key"
+  public_key = var.PUBLIC_ssh_key
 }
 
 resource "digitalocean_droplet" "tor-droplet" {
-  image  = var.droplet_image == "" ? data.digitalocean_image.centos-image[0].slug : var.droplet_image
+  image  = var.droplet_image == "" ? data.digitalocean_image.debian-image[0].slug : var.droplet_image
   name   = "tor-hidden-service-server"
   region = var.droplet_region
   size   = var.droplet_size == "" ? data.digitalocean_sizes.droplet_size[0].sizes[0].slug : var.droplet_size
-  user_data = file("../universal_scripts/install-tor-centos.sh")
+  user_data = templatefile("../universal_scripts/install-tor-debian.sh", {
+    INSTALL_ONIONSHARE=var.install_onionshare,
+    SSH_HARDENING=true
+  })
+  ssh_keys = [digitalocean_ssh_key.tor-server-ssh-key.fingerprint]
 }
 
 # Firewall to apply to the tor droplet
@@ -42,7 +44,7 @@ resource "digitalocean_firewall" "tor-droplet-firewall" {
   inbound_rule {
     protocol         = "tcp"
     port_range       = "22"
-    source_addresses = var.lock_down_firewall ? ["${data.http.local-ip[0].body}/32"] : ["0.0.0.0/0"]
+    source_addresses = var.allowed_ssh_ip == "0.0.0.0" ? ["0.0.0.0/0"] : ["${var.allowed_ssh_ip}/32"]
   }
 
   outbound_rule {

@@ -58,31 +58,9 @@ data "aws_subnet" "custom-user-subnet" {
 ###################
 # SESSION MANAGER #
 ###################
-data "aws_iam_policy_document" "session-manager-json" {
-  statement {
-    sid = "SSMstuff"
-    actions = [
-      "ssm:UpdateInstanceInformation",
-      "ssmmessages:CreateControlChannel",
-      "ssmmessages:CreateDataChannel",
-      "ssmmessages:OpenControlChannel",
-      "ssmmessages:OpenDataChannel"
-    ]
-    resources = [
-      "*"
-    ]
-    condition {
-      test     = "StringEquals"
-      values   = ["tor-service-server"]
-      variable = "tag:Name"
-    }
-  }
-}
-
-resource "aws_iam_policy" "session-manager-policy" {
-  count  = var.ec2_key_pair == " null " ? 1 : 0
-  policy = data.aws_iam_policy_document.session-manager-json.json
-  name   = "tor-server-ssm-policy"
+data "aws_iam_policy" "ssm-managed-instance-policy" {
+  count = var.ec2_key_pair == " null " ? 1 : 0
+  arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
 }
 
 resource "aws_iam_role" "session-manager-role" {
@@ -106,7 +84,7 @@ EOF
 
 resource "aws_iam_role_policy_attachment" "session-manager-policy-attach" {
   count      = var.ec2_key_pair == " null " ? 1 : 0
-  policy_arn = aws_iam_policy.session-manager-policy[0].arn
+  policy_arn = data.aws_iam_policy.ssm-managed-instance-policy[0].arn
   role       = aws_iam_role.session-manager-role[0].name
 }
 
@@ -239,6 +217,5 @@ resource "aws_security_group_rule" "tor-instance-sg-inbound" {
       condition     = var.ec2_key_pair != " null " && var.allowed_ssh_ip != "x.x.x.x"
       error_message = "If you specify an EC2 key pair, you must also specify an allowed_ssh_ip with a public IP address that will be allowed to SSH into this instance."
     }
-
   }
 }
