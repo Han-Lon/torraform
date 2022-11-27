@@ -2,7 +2,13 @@
 A fast way to experiment with [Tor onion services.](https://tb-manual.torproject.org/onion-services/)
 
 ### DISCLAIMER
-DON'T DO ANYTHING ILLEGAL WITH THIS PROJECT. This is for your own good as well as mine. 
+DON'T DO ANYTHING ILLEGAL WITH THIS PROJECT. While this project implements basic hardening and security principles, 
+it's by no means secure enough for a high risk environment. You will most likely get caught if you engage in illegal activities with this. 
+
+### Table of Contents
+- [Setup](#setup)
+  - [Prerequisites](#prerequisites)
+
 
 ### Setup
 #### Prerequisites
