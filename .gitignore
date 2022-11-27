@@ -30,5 +30,6 @@ override.tf.json
 
 .idea/
 
-# Do not push .tfvars files to remote
+# Do not push .tfvars files to remote, except the example file
 *.tfvars
+!EXAMPLE-tor.tfvars
