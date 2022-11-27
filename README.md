@@ -14,6 +14,18 @@ it's by no means secure enough for a high risk environment. You will most likely
 - [Onionshare Use](#onionshare-use)
 - [Tor Onion Service Direct Configuration (Advanced)](#manual-tor-onion-service-configuration-advanced)
 
+### Important Files [IMPORTANT]
+- Throughout using this project, you will generate several important files that **must** be kept safe and secure
+- [Local] Your local **private** SSH key, if using the SSH connection method. Anyone with the private key will be able to access your Tor server's administrative shell
+- [Local] Terraform state files-- these files are basically how Terraform "remembers" what resource it has built. These files end in `.tfstate` and `.tfstate.backup`
+  - It's not the end of the world if this file is deleted-- the code for each cloud provider is set up to use minimal resources. Deleting the instance within the cloud provider's web console should remove the only cost-generating resource
+  - [Advanced] It's a Terraform best-practice to store state in a remote backend to ensure safe and durable storage. Check out [this page](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#available-backends) for how to implement this
+    - Note that your state file contains information about your Tor server, such as its public IP address. Take this into account when picking a secure state backend
+- [On Server] Tor onion service keys
+  - These are really only a concern if you don't use [Onionshare](#onionshare-use) (which installs by default, so skip this if you don't plan on changing it)
+  - These keys are located in your /var/lib/tor/<RANDOM_STRING> directory-- everything except the `hostname` file should be closely guarded and highly secure
+    - If the private key files in this directory are leaked, anyone with the keys can impersonate your onion service
+
 ### Setup
 #### Prerequisites
 - Install [Terraform](https://developer.hashicorp.com/terraform/downloads?product_intent=terraform) or set up [Terraform Cloud](https://cloud.hashicorp.com/products/terraform)
@@ -34,6 +46,7 @@ it's by no means secure enough for a high risk environment. You will most likely
 - Click `Connect` in the top right corner
 - Select the `Session Manager` option from the tabs
 - Click `Connect` to start a session right in your browser-- no SSH needed!
+- If/when you want to destroy your Tor onion server, simply run `terraform destroy`
 
 
 #### Digital Ocean Deployment (Minimal Configuration)
@@ -52,6 +65,7 @@ it's by no means secure enough for a high risk environment. You will most likely
 - Use the DigitalOcean console to get the public IP address of your new Tor instance
 - SSH into the instance using `ssh -i ~/.ssh/<PRIVATE_SSH_KEY> root@<INSTANCE_IP_ADDRESS>`
 - From here, refer to the [Onionshare Use] section below for how to quickly set up a Tor site
+- If/when you want to destroy your Tor onion server, simply run `terraform destroy -var-file="../tor.tfvars"`
 
 
 #### Vultr Deployment (Minimal Configuration)
@@ -78,6 +92,7 @@ it's by no means secure enough for a high risk environment. You will most likely
 - Use the Vultr console to get the public IP address of your new Tor instance
 - SSH into the instance using `ssh -i ~/.ssh/<PRIVATE_SSH_KEY> root@<INSTANCE_IP_ADDRESS>`
 - From here, refer to the [Onionshare Use](#onionshare-use) section below for how to quickly set up a Tor site
+- If/when you want to destroy your Tor onion server, simply run `terraform destroy -var-file="../tor.tfvars"`
 
 
 ### Onionshare Use
@@ -86,7 +101,7 @@ it's by no means secure enough for a high risk environment. You will most likely
   - To run them in the background, use `nohup`
     - e.g. with the chat server option -- `nohup onionshare --chat > onionshare-output.log 2>&1 &`
     - Onionshare will run in the background, and all output will be put into the `onionshare-output.log` file
-    - To kill a background Onionshare service, type `pgrep onionshare` into the CLI, then copy the output number (e.g. `255107`). From there, type `pkill <copied_number>` to kill the background task
+    - To kill a background Onionshare service, type `pgrep onionshare` into the CLI, then copy the output number (e.g. `25510`). From there, type `pkill <copied_number>` to kill the background task
 - By default, `onionshare` services will require a private key to connect (this key is generated when you launch the service-- check `onionshare-output.log`)
   - You can specify the `--public` option to make your onion service publicly available
 
