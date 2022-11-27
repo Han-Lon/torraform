@@ -8,7 +8,11 @@ it's by no means secure enough for a high risk environment. You will most likely
 ### Table of Contents
 - [Setup](#setup)
   - [Prerequisites](#prerequisites)
-
+  - [AWS Deployment with Minimal Configuration](#aws-deployment-minimal-configuration)
+  - [Digital Ocean Deployment with Minimal Configuration](#digital-ocean-deployment-minimal-configuration)
+  - [Vultr Deployment with Minimal Configuration](#vultr-deployment-minimal-configuration)
+- [Onionshare Use](#onionshare-use)
+- [Tor Onion Service Direct Configuration (Advanced)](#manual-tor-onion-service-configuration-advanced)
 
 ### Setup
 #### Prerequisites
@@ -76,7 +80,7 @@ it's by no means secure enough for a high risk environment. You will most likely
 - From here, refer to the [Onionshare Use](#onionshare-use) section below for how to quickly set up a Tor site
 
 
-#### Onionshare Use
+### Onionshare Use
 - By default, a utility called [Onionshare](https://docs.onionshare.org/2.6/en/advanced.html#command-line-interface) is installed for quick setup and management of a Tor onion service. Type `onionshare` into the CLI to see all the options it can be run with
 - You can just run `onionshare` commands directly on the instance, but they'll terminate once your session ends (foreground task)
   - To run them in the background, use `nohup`
@@ -86,7 +90,7 @@ it's by no means secure enough for a high risk environment. You will most likely
 - By default, `onionshare` services will require a private key to connect (this key is generated when you launch the service-- check `onionshare-output.log`)
   - You can specify the `--public` option to make your onion service publicly available
 
-#### Manual Tor Onion Service Configuration (Advanced)
+### Manual Tor Onion Service Configuration (Advanced)
 - By default, Onionshare is installed on your Tor server. This can be disabled by specifying `install_onionshare=false` in your `tor.tfvars` file
   - This will set up a basic manual configuration for a Tor onion service, directing Tor traffic to `localhost:80`
     - While you can configure this to instead use HTTPS for added security, this is not required since Tor is E2E encrypted anyway. There's also a very real possibility of de-anonymization due to how centralized certificate authorities work
