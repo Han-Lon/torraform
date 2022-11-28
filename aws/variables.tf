@@ -33,6 +33,12 @@ variable "ami_id" {
   }
 }
 
+variable "instance_type" {
+  description = "The EC2 instance type (compute+memory resources) to allocate for the Tor server. Defaults to t3.micro, which is pretty cheap but effective for small to medium workloads."
+  type = string
+  default = "t3.micro"
+}
+
 variable "launch_basic_networking" {
   description = "Whether or not to launch a basic network setup within this module. If false, you will have to supply a subnet_id value."
   type        = bool

@@ -57,7 +57,7 @@ resource "aws_key_pair" "torraform-key-pair" {
 
 resource "aws_instance" "tor-instance" {
   ami           = var.ami_id == "ami-null" ? data.aws_ami.debian-official[0].image_id : var.ami_id
-  instance_type = "t3.micro"
+  instance_type = var.instance_type
 
   subnet_id = var.launch_basic_networking ? aws_subnet.tor-subnet[0].id : var.subnet_id
 
