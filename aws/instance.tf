@@ -30,7 +30,8 @@ data "template_cloudinit_config" "ssm-agent-and-tor-userdata" {
     filename = "install-tor.sh"
     content_type = "text/x-shellscript"
     content = templatefile("../universal_scripts/install-tor-debian.sh", {
-      INSTALL_ONIONSHARE=var.install_onionshare
+      INSTALL_ONIONSHARE=var.install_onionshare ? "true" : "false"
+      SSH_HARDENING="true"
     })
   }
 }
@@ -44,7 +45,8 @@ data "template_cloudinit_config" "tor-userdata-only" {
     filename = "install-tor.sh"
     content_type = "text/x-shellscript"
     content = templatefile("../universal_scripts/install-tor-debian.sh", {
-      INSTALL_ONIONSHARE=var.install_onionshare
+      INSTALL_ONIONSHARE=var.install_onionshare ? "true" : "false"
+      SSH_HARDENING="true"
     })
   }
 }
@@ -61,7 +63,7 @@ resource "aws_instance" "tor-instance" {
 
   subnet_id = var.launch_basic_networking ? aws_subnet.tor-subnet[0].id : var.subnet_id
 
-  security_groups = [aws_security_group.tor-instance-sg.id]
+  vpc_security_group_ids = [aws_security_group.tor-instance-sg.id]
 
   iam_instance_profile = var.PUBLIC_ssh_key == "ssh-rsa null" ? aws_iam_instance_profile.session-manager-instance-profile[0].name : null
 
@@ -88,4 +90,12 @@ resource "aws_instance" "tor-instance" {
   }
 
   depends_on = [aws_internet_gateway.tor-vpc-igw] # TF docs recommend explicit depends-on for IGWs https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/internet_gateway
+}
+
+locals {
+  output_message = var.PUBLIC_ssh_key == "ssh-rsa null" ? "Your EC2 instance will soon be reachable via AWS Session Manager (in the AWS console). Give it 5-10 minutes for the bootstrapping process to fully complete." : "Your EC2 instance will be reachable at IP address ${aws_instance.tor-instance.public_ip}. Give it 5-10 minutes for the bootstrapping process to fully complete."
+}
+
+output "instance-notification" {
+  value = local.output_message
 }

@@ -18,6 +18,7 @@ Please check your country's laws regarding Tor-- while running Tor itself is not
 ### Important Files [IMPORTANT]
 - Throughout using this project, you will generate several important files that **must** be kept safe and secure
 - [Local] Your local **private** SSH key, if using the SSH connection method. Anyone with the private key will be able to access your Tor server's administrative shell
+  - I personally recommend using RSA keys. Just about every cloud provider supports them. You can generate them by executing `ssh-keygen -t rsa`
 - [Local] Terraform state files-- these files are basically how Terraform "remembers" what resource it has built. These files end in `.tfstate` and `.tfstate.backup`
   - It's not the end of the world if this file is deleted-- the code for each cloud provider is set up to use minimal resources. Deleting the instance within the cloud provider's web console should remove the only cost-generating resource
   - [Advanced] It's a Terraform best-practice to store state in a remote backend to ensure safe and durable storage. Check out [this page](https://developer.hashicorp.com/terraform/language/settings/backends/configuration#available-backends) for how to implement this

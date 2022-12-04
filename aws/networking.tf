@@ -77,7 +77,7 @@ resource "aws_security_group_rule" "tor-instance-sg-outbound" {
 
 # Only create the inbound SSH rule if we're setting a key pair, meaning SSH is required
 resource "aws_security_group_rule" "tor-instance-sg-inbound" {
-  count = var.ec2_key_pair == " null " ? 0 : 1
+  count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 0 : 1
   from_port         = 22
   protocol          = "tcp"
   security_group_id = aws_security_group.tor-instance-sg.id
@@ -87,7 +87,7 @@ resource "aws_security_group_rule" "tor-instance-sg-inbound" {
 
   lifecycle {
     precondition {
-      condition     = var.ec2_key_pair != " null " && var.allowed_ssh_ip != "x.x.x.x"
+      condition     = var.PUBLIC_ssh_key != "ssh-rsa null" && var.allowed_ssh_ip != "x.x.x.x"
       error_message = "If you specify an EC2 key pair, you must also specify an allowed_ssh_ip with a public IP address that will be allowed to SSH into this instance."
     }
   }
