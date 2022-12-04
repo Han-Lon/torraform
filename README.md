@@ -3,7 +3,8 @@ A fast way to experiment with [Tor onion services.](https://tb-manual.torproject
 
 ### DISCLAIMER
 DON'T DO ANYTHING ILLEGAL WITH THIS PROJECT. While this project implements basic hardening and security principles, 
-it's by no means secure enough for a high risk environment. You will most likely get caught if you engage in illegal activities with this. 
+it's by no means secure enough for a high risk environment. You will most likely get caught if you engage in illegal activities with this. <br>
+Please check your country's laws regarding Tor-- while running Tor itself is not illegal in nations such as the U.S., other countries with strong censorship laws may explicitly ban it.
 
 ### Table of Contents
 - [Setup](#setup)
