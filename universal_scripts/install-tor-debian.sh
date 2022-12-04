@@ -47,6 +47,12 @@ then
   sed -i 's/UsePAM yes/UsePAM no/g' /etc/ssh/sshd_config
   sed -i 's/PasswordAuthentication yes/PasswordAuthentication no/g' /etc/ssh/sshd_config
   sed -i 's/#AuthorizedKeysFile/AuthorizedKeysFile/g' /etc/ssh/sshd_config
-  sed -i 's/admin:!/admin:*/g' /etc/shadow
+  useradd -m -s /bin/bash -g admin terraformer
+  usermod -a -G sudo terraformer
+  sed -i 's/terraformer:!/terraformer:*/g' /etc/shadow
+  sed -i 's/admin:*/admin:!/g' /etc/shadow
+  mkdir -p /home/terraformer/.ssh
+  chmod 1600 /home/terraformer/.ssh
+  cp /home/admin/.ssh/authorized_keys /home/terraformer/.ssh/
   systemctl reload ssh
 fi
