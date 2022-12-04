@@ -54,5 +54,6 @@ then
   mkdir -p /home/terraformer/.ssh
   chmod 1600 /home/terraformer/.ssh
   cp /home/admin/.ssh/authorized_keys /home/terraformer/.ssh/
+  # Going to have to get fancy with adding sudoer commands to /etc/sudoers.d/ for passwordless sudo access
   systemctl reload ssh
 fi
