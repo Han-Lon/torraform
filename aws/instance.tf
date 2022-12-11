@@ -16,7 +16,6 @@ data "aws_ami" "debian-official" {
 }
 
 data "template_cloudinit_config" "ssm-agent-and-tor-userdata" {
-  count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 1 : 0
   gzip = true
   base64_encode = true
 
@@ -37,7 +36,6 @@ data "template_cloudinit_config" "ssm-agent-and-tor-userdata" {
 }
 
 data "template_cloudinit_config" "tor-userdata-only" {
-  count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 0 : 1
   gzip = true
   base64_encode = true
 
@@ -69,7 +67,7 @@ resource "aws_instance" "tor-instance" {
 
   key_name = var.PUBLIC_ssh_key == "ssh-rsa null" ? null : aws_key_pair.torraform-key-pair[0].key_name
 
-  user_data_base64 = var.PUBLIC_ssh_key == " null " ? data.template_cloudinit_config.ssm-agent-and-tor-userdata[0].rendered : data.template_cloudinit_config.tor-userdata-only[0].rendered
+  user_data_base64 = var.PUBLIC_ssh_key == " null " ? data.template_cloudinit_config.ssm-agent-and-tor-userdata.rendered : data.template_cloudinit_config.tor-userdata-only.rendered
 
   tags = {
     Name = "tor-service-server"
