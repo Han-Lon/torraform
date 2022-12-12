@@ -49,6 +49,10 @@ data "template_cloudinit_config" "tor-userdata-only" {
   }
 }
 
+data "aws_kms_key" "ebs-kms-key" {
+  key_id = var.kms_key_identifier
+}
+
 resource "aws_key_pair" "torraform-key-pair" {
   count = var.PUBLIC_ssh_key == "ssh-rsa null" ? 0 : 1
   public_key = var.PUBLIC_ssh_key
@@ -71,6 +75,11 @@ resource "aws_instance" "tor-instance" {
 
   tags = {
     Name = "tor-service-server"
+  }
+
+  root_block_device {
+    encrypted = true
+    kms_key_id = data.aws_kms_key.ebs-kms-key.id
   }
 
 

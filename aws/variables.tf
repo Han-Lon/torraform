@@ -52,6 +52,18 @@ variable "subnet_id" {
 }
 
 
+#####################
+# EC2 INSTANCE VARS #
+#####################
+
+# Looking for more info on how this can be set? https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/kms_alias
+variable "kms_key_identifier" {
+  description = "The valid identifier (ARN, alias, or ID) of the KMS key that should be used to encrypt the EBS volume associated with the Tor server. Defaults to alias/aws/kms"
+  type = string
+  default = "alias/aws/ebs"
+}
+
+
 ######################
 # BOOTSTRAPPING VARS #
 ######################
