@@ -49,9 +49,8 @@ data "template_cloudinit_config" "tor-userdata-only" {
   }
 }
 
-# TODO make this dynamic in case users want to supply their own KMS key
 data "aws_kms_key" "ebs-kms-key" {
-  key_id = "alias/aws/ebs"
+  key_id = var.kms_key_identifier
 }
 
 resource "aws_key_pair" "torraform-key-pair" {
