@@ -67,7 +67,7 @@ resource "aws_instance" "tor-instance" {
 
   key_name = var.PUBLIC_ssh_key == "ssh-rsa null" ? null : aws_key_pair.torraform-key-pair[0].key_name
 
-  user_data_base64 = var.PUBLIC_ssh_key == " null " ? data.template_cloudinit_config.ssm-agent-and-tor-userdata.rendered : data.template_cloudinit_config.tor-userdata-only.rendered
+  user_data_base64 = var.PUBLIC_ssh_key == "ssh-rsa null" ? data.template_cloudinit_config.ssm-agent-and-tor-userdata.rendered : data.template_cloudinit_config.tor-userdata-only.rendered
 
   tags = {
     Name = "tor-service-server"
